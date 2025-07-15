@@ -2,9 +2,9 @@
 import React, {useState, useEffect}from "react";
 import axios from 'axios';
 import Link from 'next/link';
-import Navbar from '../../../components/Navbar';
-import Profile from '../../../components/Profile';
-import Logout from '../../../components/Logout';
+import Navbar from '../../components/Navbar';
+import Profile from '../../components/Profile';
+import Logout from '../../components/Logout';
 import {useRouter, useParams} from 'next/navigation';
 
 
