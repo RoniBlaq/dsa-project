@@ -1,5 +1,5 @@
 'use client';
-import React, {useState, useEffect}from "react";
+import React, {useState, useEffect}from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import Navbar from '../../../components/Navbar';
@@ -7,6 +7,9 @@ import Profile from '../../../components/Profile';
 import Logout from '../../../components/Logout';
 
 const MentorBookings = ({ bookings }) => {
+const [showDashboard, setShowDashboard] = useState(false);
+const [profilePicture, setProfilePicture] = useState(null);
+
     const handleUpdateBooking = (id, status) => {
         fetch('http://localhost/nextphp/track.php', {
 
@@ -14,16 +17,16 @@ const MentorBookings = ({ bookings }) => {
             headers: {
                 'Content-Type': 'applicaton/json'
             },
-            body:JSON.srtringify({id, status }),
+            body:JSON.stringify({id, status })
         })
         .then((response) => response.json())
         .then((data)=> console.log(data))
         .catch((error) => console.error(error));
     };
-    const [showDashboard, setShowDashboard] = useState(false);
+    
     
         const toggleDashboard = () => {
-            setShowDashboard( ! showDashboard);
+            setShowDashboard(!showDashboard);
         };
       const handleLinkClick = () => {
         toggleDashboard();
@@ -65,20 +68,23 @@ const MentorBookings = ({ bookings }) => {
 
         <div className="container mx-auto p-4">
             <h1 className="text-3x1 font-bold mb-4">Booking Requests</h1>
-            {bookings && bookings.map((booking)=> (
+            {bookings ? (
+                  bookings.map((booking)=> (
                 <div key={booking.id} className="bg-white shadow-md p-4 mb-4">
                     <p>Mentee: {booking.meetee_name}</p>
                     <p>Session Date: {booking.session_date}</p>
                     <p>Session Time: {booking.session_time}</p>
                      <p>Topic: {booking.Topic}</p>
-
                      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2" onClick={() => handleUpdateBooking(booking.id, 'accepted')}>
                         Accept</button>
-
                         <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2" onClick={() => handleUpdateBooking(booking.id, 'rejected')}>
                         Reject</button> 
                 </div>
-            ))}
+            ))
+             
+            ) :(
+                 <p>Loading....</p>
+            )}
         </div>
         </React.fragment>
     )
