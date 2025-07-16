@@ -12,11 +12,11 @@ const MentorBookings = ({ bookings }) => {
 
             method: 'POST',
             headers: {
-                'Content-Type': 'applicaton/json',
+                'Content-Type': 'applicaton/json'
             },
             body:JSON.srtringify({id, status }),
         })
-        .then((response) => response.JSON())
+        .then((response) => response.json())
         .then((data)=> console.log(data))
         .catch((error) => console.error(error));
     };
