@@ -65,7 +65,7 @@ const MentorBookings = ({ bookings }) => {
 
         <div className="container mx-auto p-4">
             <h1 className="text-3x1 font-bold mb-4">Booking Requests</h1>
-            {bookings.map((booking)=> (
+            {bookings && bookings.map((booking)=> (
                 <div key={booking.id} className="bg-white shadow-md p-4 mb-4">
                     <p>Mentee: {booking.meetee_name}</p>
                     <p>Session Date: {booking.session_date}</p>
