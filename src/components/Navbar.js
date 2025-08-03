@@ -1,14 +1,16 @@
 'use client';
-
 import React, { useState } from 'react';
 import Profile from '../components/Profile';
 import Logout from '../components/Logout';
+import { useRouter } from 'next/navigation';
 
 function DashboardNavbar({ toggleDashboard
 }) {
+    const router = useRouter();
+    const [profileImage, setProfileImage] = useState(null);
 
-    const handleFileChange = (e) => {
-    setProfilePicture(e.target.files[0]);
+    const handleProfileImageChange = (newImage) => {
+    setProfileImage(newImage);
 };
 
     return (
@@ -30,15 +32,18 @@ function DashboardNavbar({ toggleDashboard
             </button>
             <div className="flex gap-2">
                 <div className="w-24">
-           <Profile/>
+           <Profile
+           profileImage={profileImage}
+           onProfileImageChange={handleProfileImageChange}
+           />
              </div>
              <div className="w-24">
-            <Logout/>
+           <Logout router={router} />
              </div>
              </div>
              </nav>
 
     );
-}
+};
 
 export default DashboardNavbar;

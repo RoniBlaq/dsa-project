@@ -1,24 +1,18 @@
 'use client';
-import React, {useState, useEffect}from "react";
+import React, {useState, useEffect}from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-  function Profile() {
-    const [profileImage, setProfileImage] = useState(null);
-
+  function Profile({ profileImage, onProfileImageChange }) {
     const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      setProfileImage(reader.result);
+    const newImage = e.target.files[0];
+    onProfileImageChange(newImage);
     };
-       reader.readAsDataURL(file);
-};
     return (
     <div className=" relative rounded-full border-2 border-gray-300 w-12 h-12 flex items-center justify-center">
       <input id="profilePicture" type="file" onChange={handleFileChange} style={{display: 'none'}} />
       {profileImage && (
-        <Image src={profileImage}
+        <Image src={URL.createObjectURL(profileImage)}
         width={100}
         height={100}
         className="object-cover rounded-full" alt="Profile picture" />

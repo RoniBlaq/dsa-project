@@ -8,9 +8,9 @@ export default function Home() {
 const router= useRouter();
 const [formvalue, setFormvalue] = useState({name:"", email:"", password:"", cpassword:"", user_type:""});
 const [message, setMessage]= useState('');
-const handleInput =(e)=>{ 
+const handleInput =(e)=> 
   setFormvalue( {...formvalue, [e.target.name]:e.target.value});
-}
+
 const handleSubmit =async(e)=> {
   e.preventDefault();
   const formData= {name:formvalue.name, email:formvalue.email, password:formvalue.password, cpassword:formvalue.password, user_type:formvalue.user_type};
@@ -39,7 +39,7 @@ const handleSubmit =async(e)=> {
                <input type="password" name="password" value={formvalue.password} required placeholder="enter your password"className="mb-4 w-full rounded-lg border p-2 focus:outline-none focus:ring-yellow-500" onChange={handleInput}/>
                <input type="password" name="cpassword" value={formvalue.cpassword} required placeholder="confirm your password" className="mb-4 w-full rounded-lg border p-2 focus:outline-none focus:ring-yellow-500" onChange={handleInput}/>
                <select name="user_type" className="mb-4 w-full rounded-lg border p-2 focus:outline-none focus:ring-yellow-500" value={formvalue.user_type} onChange={handleInput}>
-                   <option value="user">mentee</option>
+                   <option value="mentee">mentee</option>
                    <option value="admin">admin</option>
                    <option value="mentor">mentor</option>
                </select>

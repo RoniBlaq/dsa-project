@@ -1,46 +1,54 @@
 'use client';
-import React, {useState }from "react";
+import React, {useState } from "react";
 import axios from 'axios';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 
 
-export default function LoginformPage() {
+ function LoginFormPage() {
 
 const router= useRouter();
-const [formvalue, setFormvalue]= useState({ email:"", password:""});
+
+const userRoutes = {
+  admin: "/adminpage/123",
+  mentee: "/userpage",
+  mentor: "/mentorpage/123"
+};
+const [formvalue, setFormvalue]= useState({ email:"", password:"", user_type:""});
 const [message, setMessage]= useState('');
-const handleInput =(e)=>{ 
-  setFormValue( {...formvalue, [e.target.name]:e.target.value});
-}
-const handleSubmit =async(e)=> {
-  e.preventDefault();
-  const formData= { email:formvalue.email, password:formvalue.password};
-   
-    const res= await axios.post("http://localhost/nextphp/loginform.php", formData);
-    if (res.data.success)
-       {
-              setMessage(res.data.success);
-              const userType = res.data.user_type;
-              setTimeout( ()=> {
-
-               if (userType === 'admin') {
-              router.push('/adminpage123');
-              } else if (userType === 'mentee'){
-                router.push('/userpage');
-              } else if (userType === 'mentor'){
-                router.push('/mentorpage123');
-              }
-
-          }, 2000);
-             
-       } else {
-            setMessage(res.data.error);
-    }
-  
+const handleInput = (e) => { 
+  setFormvalue( {...formvalue, [e.target.name]: e.target.value});
 };
 
-
+       const redirectUser = (userType) => {
+     console.log("Redirecting to:", userType);
+     const route = userRoutes[userType];
+       if (route) {
+        router.push(route);
+       } else {
+        setMessage("Invalid user type.");
+       }
+     };
+const handleSubmit =  async (e) => {
+  e.preventDefault();
+  const formData= { email:formvalue.email, password:formvalue.password,  user_type:formvalue.user_type};
+   
+    try {
+    const res= await axios.post("http://localhost/nextphp/login.php", formData);
+          if (res.data.success) {
+             setMessage(res.data.success);
+             const userType = res.data.user_type;
+             console.log("user type:", userType);
+             redirectUser(userType);
+          } else{
+            setMessage(res.data.error);
+          }
+        }
+        catch (error) {
+        console.error(error);
+        setMessage("An error occurred during login.");
+       }
+};
   return (
     <React.Fragment>
    
@@ -58,6 +66,11 @@ const handleSubmit =async(e)=> {
    <form onSubmit={handleSubmit} className="max-w-md mx-auto rounded-lg bg-white-700 p-8 shadow-md text-black" style={{ border: '1px solid yellow'}}> 
          <input type="text" name="email" value={formvalue.name} required placeholder="enter your email"className="mb-4 w-full rounded-lg border p-2 focus:outline-none focus:ring-yellow-500"  onChange={handleInput}/>
         <input type="password" name="password" value={formvalue.name} required placeholder=" your password" className="mb-4 w-full rounded-lg border p-2 focus:outline-none focus:ring-yellow-500" onChange={handleInput} />
+         <select name="user_type" className="mb-4 w-full rounded-lg border p-2 focus:outline-none focus:ring-yellow-500" value={formvalue.user_type} onChange={handleInput}>
+                   <option value="mentee">mentee</option>
+                   <option value="admin">admin</option>
+                   <option value="mentor">mentor</option>
+               </select>
        <button name="submit" className="w-full rounded-lg bg-yellow-500 p-2 text-black hover:bg-yellow-700">login now</button>
         <p className="text-lg mt-5 text-black">{"Don't"} have an account? 
             <Link href="/" className="text-yellow-400 hover:text-yellow-700">register now</Link>
@@ -67,4 +80,6 @@ const handleSubmit =async(e)=> {
     </React.Fragment>
 
   );
-};
+}
+
+export default LoginFormPage;

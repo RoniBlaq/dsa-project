@@ -2,7 +2,7 @@
 import React, {useState, useEffect}from "react";
 import axios from 'axios';
 import Link from 'next/link';
-import Navbar from '../../../components/Navbar';
+import DashboardNavbar from '../../../components/Navbar';
 import Profile from '../../../components/Profile';
 import Logout from '../../../components/Logout';
 import {useRouter, useParams} from 'next/navigation';
@@ -14,9 +14,9 @@ const [expertise, setExpertise] = useState('');
 const [bio, setBio] = useState('');
 const [availability, setAvailability] = useState('');
 const [mentorId, setMentorId] = useState(null);
-
+const [profilePicture, setProfilePicture] = useState(null);
 const [message, setMessage]= useState('');
-
+const router = useRouter();
 const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -36,7 +36,10 @@ const handleSubmit = (e) => {
         })
         .then((response) => {
             console.log(response.data);
-        });
+        })
+        .catch((error) => {
+        console.error(error)
+    });
        } else {
         axios.post('http://localhost/nextphp/mentor.php /${mentorId}', formData, {
             headers: {
@@ -52,8 +55,8 @@ const handleSubmit = (e) => {
         });
        }
 
-
 };
+
   const [showDashboard, setShowDashboard] = useState(false);
 
     const toggleDashboard = () => {
@@ -64,34 +67,36 @@ const handleSubmit = (e) => {
   };
 
 const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]){
     setProfilePicture(e.target.files[0]);
+    }
 };
 
 return (
        
-      <React.fragment>
-          <div>
-            <Navbar toggleDashboard={toggleDashboard} />
+      <React.Fragment>
+    <div>
+            <DashboardNavbar toggleDashboard={toggleDashboard} />
             {showDashboard && (
-                <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col bg-gray-800 absolute top-0 left-0 shadow-md w-50 pt-4  h-screen"> 
+         <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col bg-gray-800 absolute top-0 left-0 shadow-md w-50 pt-4  h-screen"> 
                 
                 <ul className="text-white-500 flex-1 overflow-y-auto space-y-4 ">
                     <li>
-                        <Link href="/menteepage/session/i23" >Sessions</Link>
+                        <Link href="/mentorpage/123" >Home</Link>
                     </li>
                    
                        <li>
                         <Link href="/mentorpage/request-book">Request</Link>
                     </li>
                 </ul>
-                <div className="mt-auto">
-                  <Profile/>  
-                  <Logout/>
+                  <div className="mt-auto">
+                        <Profile/>  
+                        <Logout router={router} />
                 </div>
                  <Link href="" onClick={toggleDashboard} className="text-white-500 font-bold  absolute bottom-0 right-0">
                 X
                 </Link>
-                </div> 
+             </div> 
             )}
              </div>
 
@@ -101,6 +106,11 @@ return (
             <div className="bg-white shadow-md rounded-lg p-4 md:p-6 lg:p-8">
                  <p className="text-red-500"> {message} </p>
 <form onSubmit={handleSubmit}>
+    <div className="mb-4">
+       <label htmlFor="ProfilePicture">
+          <Profile />
+       </label>
+       </div>
     <div className="mb-4">
     <label className="block text-gray-700 text-sm font-bold mb-2">Name:</label>
     <input type="text" value={name} onChange={(e) => setName (e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
@@ -117,17 +127,13 @@ return (
        <label className="block text-gray-700 text-sm font-bold mb-2">Availability:</label>
        <input type="text" value={availability} onChange={(e) => setAvailability (e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
        </div>
-       <div className="mb-4">
-       <label htmlFor="ProfilePicture">
-          <Profile/>
-       </label>
-       </div>
+       
        <button className="bg-gray-700 text-sm px-2 rounded" type="submit">Save Profile</button>
 </form>
 </div>
 </div>
 </div>
-</React.fragment>
+</React.Fragment>
 );
 
 }

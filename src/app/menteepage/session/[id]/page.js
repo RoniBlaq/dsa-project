@@ -41,17 +41,12 @@ function SessionsPage({ mentorId }) {
   const handleFileChange = (e) => {
     setProfilePicture(e.target.files[0]);
 };
-         
-       if (res.data.success) 
-      {
-        setMessage(res.data.success);
-      };
+    
 
-      const handleBookSession = (e) => {
-            router.push
-        ('/my-request');
-        e.preventDefault();
-        fetch('http://localhost/nextphp/bookings.php', {
+      const handleBookSession = async (e) => { 
+        e.preventDefault(); 
+        try{
+      const res = await fetch('http://localhost/nextphp/bookings.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json',
             },
@@ -59,11 +54,27 @@ function SessionsPage({ mentorId }) {
                 mentorId,
             ...sessionDetails,
             }),
-        })
-         .then(response => response.json())
-         .then(data => console.log(data));
+        });
+        if (!res.ok){
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const contentType =  res.headers.get(Content-Type);
+        if(contentType && contentType.includes('application/json')){
+            const data = await response.json();
+        console.log(data);
+           if (data.success) {
+        setMessage(data.success);
+        router.push('/my-request');
+         }
+        } else{
+          const text = await res.text();
+          console.log(text);
+        }
+         }  catch (error) {
+         console.error(error);
+         }
       };
-
+  
     return (
          <React.Fragment>
         <div>
@@ -72,8 +83,11 @@ function SessionsPage({ mentorId }) {
                 <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col bg-gray-800 absolute top-0 left-0 shadow-md w-50 pt-4  h-screen"> 
                 
                 <ul className="text-white-500 flex-1 overflow-y-auto space-y-4 ">
+                   <li>
+                                         <Link href="/menteepage" >Home</Link>
+                                     </li>
                     <li>
-                        <Link href="/menteepage/session/i23" >Sessions</Link>
+                        <Link href="/menteepage/session/123" >Sessions</Link>
                     </li>
                     <li>
                         <Link href="/menteepage/search-mentor">Search-Mentors</Link>
@@ -84,7 +98,7 @@ function SessionsPage({ mentorId }) {
                 </ul>
                 <div className="mt-auto ">
                   <Profile/>  
-                  <Logout/>
+                   <Logout router={router} />
                 </div>
                  <Link href="" onClick={toggleDashboard} className="text-white-500 font-bold  absolute bottom-0 right-0">
                 X
@@ -92,6 +106,16 @@ function SessionsPage({ mentorId }) {
                 </div> 
             )}
              </div>
+
+
+             <div style={{
+         backgroundImage:'url(https://t4.ftcdn.net/jpg/03/02/39/97/360_F_302399784_k69fNY2NhbWLYf3Xg4fUz50docoFAwjk.webp)',
+      backgroundSize:'cover',
+      backgroundPosition:'center',
+      backgroundRepeat:'no-repeat',
+      height:'100vh',
+      width:'100%',
+    }} >
       <div className="max-w-md mx-auto p-4 md:p-6 lg-p-8 bg-white rounded shadow-md text-black">
           <h1 className="text-3x1 font-bold mb-4">{mentor.name}</h1>  
             <p className="text-lg text-gray-600 mb-6">{mentor.bio}</p>  
@@ -113,6 +137,7 @@ function SessionsPage({ mentorId }) {
             <button type="submit" className="bg-gray-800 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded">Book Session</button>
             {/* onClick={handleBookSession} */}
                </form>
+      </div>
       </div>
    
      </React.Fragment>
